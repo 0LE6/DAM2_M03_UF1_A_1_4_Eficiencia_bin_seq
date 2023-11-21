@@ -25,7 +25,7 @@
 
         // Búsqueda lineal
         int[] arrayParaBusquedaSec = { 3, 5, 1, 2, 8 };
-        int targetSec = 8;
+        int targetSec = 8; 
         BusquedaSecuencial(arrayParaBusquedaSec, targetSec);
 
         // Búsqueda dicotómica
