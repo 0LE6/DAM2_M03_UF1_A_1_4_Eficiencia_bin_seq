@@ -55,19 +55,21 @@
     public static int BusquedaDicotomica(int[] array, int target)
     {
         int comparaciones = 0;
+        bool encontrado = false;
         int izquierda = 0;
         int derecha = array.Length - 1;
 
-        while (izquierda <= derecha)
+        while (izquierda <= derecha && !encontrado)
         {
             comparaciones++;
-            int middle = izquierda + (derecha - izquierda) / 2;
+            int mitad = izquierda + (derecha - izquierda) / 2;
 
-            if (array[middle] == target) return comparaciones;
-            if (array[middle] < target) izquierda = middle + 1;
-            else derecha = middle - 1;
+            if (array[mitad] == target) encontrado = true;
+            else if (array[mitad] < target) izquierda = mitad + 1;
+            else derecha = mitad - 1;
         }
 
         return comparaciones;
     }
+
 }
