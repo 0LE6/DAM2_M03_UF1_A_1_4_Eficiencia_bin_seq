@@ -9,45 +9,47 @@ internal class Program
 
         string filePath = "resultats.csv";
 
-        // Crear el StreamWriter fuera del bucle para escribir el encabezado
         using (StreamWriter writer = new StreamWriter(filePath, false))
         {
             writer.WriteLine("Mida;Cerca seqüencial;Cerca dicotòmica");
         }
 
-        for (int size = 500; size <= 100000; size += 500)
+        // Creamos vectores de enteros desde 500 hasta 100000
+        for (int tamaño = 500; tamaño <= 100000; tamaño += 500)
         {
-            int[] vector = new int[size];
-            for (int i = 0; i < size; i++)
+            // Creamos el vector con
+            int[] vector = new int[tamaño * 2];
+
+            for (int i = 0; i < tamaño * 2; i++)
             {
                 vector[i] = (i + 1) * 2;
             }
 
-            int numSearches = size / 2;
-            long totalSequentialComparisons = 0;
-            long totalBinaryComparisons = 0;
+            int numeroDeBusquedas = tamaño / 2;
+            long totalDeComparacionesSeq = 0;
+            long totalDeComparacionesBin = 0;
 
-            for (int i = 0; i < numSearches; i++)
+            for (int i = 0; i < numeroDeBusquedas; i++)
             {
-                // Generar índices únicos en lugar de valores aleatorios
-                int index = new Random().Next(0, size);
+                int index = new Random().Next(0, tamaño);
                 int target = vector[index];
 
                 int sequentialComparisons = BusquedaSecuencial(vector, target);
-                totalSequentialComparisons += sequentialComparisons;
+                totalDeComparacionesSeq += sequentialComparisons;
 
                 int binaryComparisons = BusquedaBinaria(vector, target);
-                totalBinaryComparisons += binaryComparisons;
+                totalDeComparacionesBin += binaryComparisons;
             }
-
-            long avgSequentialComparisons = totalSequentialComparisons / numSearches;
-            long avgBinaryComparisons = totalBinaryComparisons / numSearches;
+            //Console.WriteLine(totalDeComparacionesSeq);
+            long avgSequentialComparisons = totalDeComparacionesSeq / numeroDeBusquedas;
+            //Console.WriteLine(avgSequentialComparisons);
+            long avgBinaryComparisons = totalDeComparacionesBin / numeroDeBusquedas;
 
             // Escribir resultados en la consola
-            Console.WriteLine($"{size};{avgSequentialComparisons};{avgBinaryComparisons}");
+            Console.WriteLine($"{tamaño};{avgSequentialComparisons};{avgBinaryComparisons}");
 
             // Añadir los resultados al archivo CSV
-            PasarLosResultadosACSV(filePath, size, avgSequentialComparisons, avgBinaryComparisons);
+            PasarLosResultadosACSV(filePath, tamaño, avgSequentialComparisons, avgBinaryComparisons);
         }
     }
 
@@ -88,8 +90,7 @@ internal class Program
     }
 
     static void PasarLosResultadosACSV(string filePath, int size, long avgSequentialComparisons, long avgBinaryComparisons)
-    {
-        // Añadir los resultados al archivo CSV
+    { 
         using (StreamWriter writer = new StreamWriter(filePath, true))
         {
             writer.WriteLine($"{size};{avgSequentialComparisons};{avgBinaryComparisons}");
