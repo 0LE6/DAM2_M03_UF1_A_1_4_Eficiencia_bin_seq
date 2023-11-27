@@ -1,38 +1,54 @@
-﻿internal class Program
+﻿using System;
+using System.IO;
+
+internal class Program
 {
     private static void Main(string[] args)
     {
+        Console.WriteLine("Mida;Cerca seqüencial;Cerca dicotòmica");
 
-        // Práctica A1.4
+        string filePath = "resultats.csv";
 
-        // Creamos StreamWriter para generar csv
-        StreamWriter sW = new StreamWriter("resultats.csv");
-
-        /* resultats.csv
-        Mida;Cerca seqüencial;Cerca dicotòmica
-        500;???;??
-        1000;???;??
-        1500;???;??
-        2000;???;??
-        …
-        100000;???;??
-        */
-
-        for (int i = 500; i < 100000; i += 500)
+        // Crear el StreamWriter fuera del bucle para escribir el encabezado
+        using (StreamWriter writer = new StreamWriter(filePath, false))
         {
-            int[] vector = new int[i];
+            writer.WriteLine("Mida;Cerca seqüencial;Cerca dicotòmica");
         }
 
-        // Búsqueda lineal
-        int[] arrayParaBusquedaSec = { 3, 5, 1, 2, 8 };
-        int targetSec = 8; 
-        BusquedaSecuencial(arrayParaBusquedaSec, targetSec);
+        for (int size = 500; size <= 100000; size += 500)
+        {
+            int[] vector = new int[size];
+            for (int i = 0; i < size; i++)
+            {
+                vector[i] = (i + 1) * 2;
+            }
 
-        // Búsqueda dicotómica
-        int[] arrayParaBusquedaDic = { 3, 5, 1, 2, 8 };
-        int targetDic = 8;
-        BusquedaDicotomica(arrayParaBusquedaDic, targetDic);
+            int numSearches = size / 2;
+            long totalSequentialComparisons = 0;
+            long totalBinaryComparisons = 0;
 
+            for (int i = 0; i < numSearches; i++)
+            {
+                // Generar índices únicos en lugar de valores aleatorios
+                int index = new Random().Next(0, size);
+                int target = vector[index];
+
+                int sequentialComparisons = BusquedaSecuencial(vector, target);
+                totalSequentialComparisons += sequentialComparisons;
+
+                int binaryComparisons = BusquedaBinaria(vector, target);
+                totalBinaryComparisons += binaryComparisons;
+            }
+
+            long avgSequentialComparisons = totalSequentialComparisons / numSearches;
+            long avgBinaryComparisons = totalBinaryComparisons / numSearches;
+
+            // Escribir resultados en la consola
+            Console.WriteLine($"{size};{avgSequentialComparisons};{avgBinaryComparisons}");
+
+            // Añadir los resultados al archivo CSV
+            PasarLosResultadosACSV(filePath, size, avgSequentialComparisons, avgBinaryComparisons);
+        }
     }
 
     public static int BusquedaSecuencial(int[] array, int target)
@@ -51,8 +67,7 @@
         return comparaciones;
     }
 
-
-    public static int BusquedaDicotomica(int[] array, int target)
+    public static int BusquedaBinaria(int[] array, int target)
     {
         int comparaciones = 0;
         bool encontrado = false;
@@ -72,4 +87,12 @@
         return comparaciones;
     }
 
+    static void PasarLosResultadosACSV(string filePath, int size, long avgSequentialComparisons, long avgBinaryComparisons)
+    {
+        // Añadir los resultados al archivo CSV
+        using (StreamWriter writer = new StreamWriter(filePath, true))
+        {
+            writer.WriteLine($"{size};{avgSequentialComparisons};{avgBinaryComparisons}");
+        }
+    }
 }
