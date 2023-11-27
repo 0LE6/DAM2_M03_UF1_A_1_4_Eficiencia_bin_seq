@@ -37,16 +37,37 @@
 
     public static int BusquedaSecuencial(int[] array, int target)
     {
-        int low = 0;
-        int high = array.Length - 1;
-        int cont = 0;
+        int comparaciones = 0;
+        bool encontrado = false;
+        int i = 0;
 
+        while (i < array.Length && !encontrado)
+        {
+            comparaciones++;
+            if (array[i] == target) encontrado = true;
+            else i++;
+        }
 
-        return 0;
+        return comparaciones;
     }
+
 
     public static int BusquedaDicotomica(int[] array, int target)
     {
-        return 0;
+        int comparaciones = 0;
+        int izquierda = 0;
+        int derecha = array.Length - 1;
+
+        while (izquierda <= derecha)
+        {
+            comparaciones++;
+            int middle = izquierda + (derecha - izquierda) / 2;
+
+            if (array[middle] == target) return comparaciones;
+            if (array[middle] < target) izquierda = middle + 1;
+            else derecha = middle - 1;
+        }
+
+        return comparaciones;
     }
 }
